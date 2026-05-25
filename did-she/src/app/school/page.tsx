@@ -19,19 +19,27 @@ export default function SchoolDashboard() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In Step 4, we will send this data to our database.
-    console.log("Submitting absences for:", absences);
+    
+    // Call our new backend API!
+    const response = await fetch('/api/attendance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ absentStudents: absences }),
+    });
+
+    const data = await response.json();
+    console.log("Server Response:", data);
+
     setSubmitted(true);
     
-    // Reset after 3 seconds for demo purposes
+    // Reset after 4 seconds
     setTimeout(() => {
       setSubmitted(false);
       setAbsences([]);
-    }, 3000);
+    }, 4000);
   };
-
   return (
     <main className="min-h-screen bg-gray-50 p-8 text-black">
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md">
