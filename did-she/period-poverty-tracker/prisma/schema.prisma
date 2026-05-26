@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  role      Role
+  schoolId  String?
+  zone      String?
+  createdAt DateTime @default(now())
+
+  school  School?         @relation(fields: [schoolId], references: [id])
+  logs    AttendanceLog[]
+
+  @@map("profiles")
+}
+
+enum Role {
+  TEACHER
+  ASHA
+  PHC_ADMIN
+}
+
+model School {
+  id       String @id @default(uuid())
+  name     String
+  code     String @unique
+  zone     String
+  district String
+  state    String
+
+  profiles Profile[]
+  students Student[]
+  logs     AttendanceLog[]
+
+  @@map("schools")
+}
+
+model Student {
+  id          String   @id @default(uuid())
+  anonymousId String   @unique
+  schoolId    String
+  grade       String
+  enrolledAt  DateTime @default(now())
+
+  school School          @relation(fields: [schoolId], references: [id])
+  logs   AttendanceLog[]
+  alerts Alert[]
+
+  @@map("students")
+}
+
+model AttendanceLog {
+  id          String   @id @default(uuid())
+  studentId   String
+  schoolId    String
+  loggedById  String
+  weekStart   DateTime
+  daysPresent Int
+  daysAbsent  Int
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  student  Student @relation(fields: [studentId], references: [id])
+  school   School  @relation(fields: [schoolId], references: [id])
+  loggedBy Profile @relation(fields: [loggedById], references: [id])
+
+  @@unique([studentId, weekStart])
+  @@map("attendance_logs")
+}
+
+model Alert {
+  id              String      @id @default(uuid())
+  studentId       String
+  schoolCode      String
+  zone            String
+  grade           String
+  cycleConfidence Float
+  detectedAt      DateTime    @default(now())
+  status          AlertStatus @default(PENDING)
+  resolvedAt      DateTime?
+  resolvedBy      String?
+
+  student       Student        @relation(fields: [studentId], references: [id])
+  supplyRequest SupplyRequest?
+
+  @@map("alerts")
+}
+
+enum AlertStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+}
+
+model SupplyRequest {
+  id           String       @id @default(uuid())
+  alertId      String       @unique
+  zone         String
+  schoolCode   String
+  kitsNeeded   Int          @default(1)
+  status       SupplyStatus @default(QUEUED)
+  requestedAt  DateTime     @default(now())
+  dispatchedAt DateTime?
+  deliveredAt  DateTime?
+
+  alert Alert @relation(fields: [alertId], references: [id])
+
+  @@map("supply_requests")
+}
+
+enum SupplyStatus {
+  QUEUED
+  DISPATCHED
+  DELIVERED
+}

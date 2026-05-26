@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
+@import "tailwindcss";
+
+:root {
+  --brand: #1B4332;
+  --brand-mid: #2D6A4F;
+  --brand-light: #D8F3DC;
+  --brand-pale: #F0FAF2;
+  --accent: #E9C46A;
+  --accent-dark: #C9982A;
+  --surface: #FFFFFF;
+  --surface-2: #F8F9FA;
+  --surface-3: #F1F3F5;
+  --border: #E2E8E4;
+  --border-strong: #C8D5CC;
+  --text-primary: #0D1F17;
+  --text-secondary: #4A5E52;
+  --text-muted: #8A9E92;
+  --danger: #C0392B;
+  --danger-light: #FDEDEB;
+  --warning: #B7791F;
+  --warning-light: #FFFBEB;
+  --success: #1B6B3A;
+  --success-light: #EDFAF3;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+.serif { font-family: 'Instrument Serif', Georgia, serif; }
+
+input:focus, button:focus { outline: 2px solid var(--brand-mid); outline-offset: 2px; }
